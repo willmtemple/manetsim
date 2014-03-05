@@ -6,73 +6,51 @@
  * This file defines the implementation of a RouteNode class.
  */
 
-//Easy init constructor
-RouteNode::RouteNode( RNType t, int x, int y, int propTime, int transTime ) {
+#include <cmath>
+#include <iostream>
+#include "Node.h"
 
-  this->type = t;
+using std::cerr;
+using std::endl;
+
+double dist( int x1, int y1, int x2, int y2 ) {
+
+  return sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
+
+}
+
+//Easy init constructor
+Node::Node( int x, int y, int id ) {
+
   this->x = x;
   this->y = y;
-  this->propTime = propTime;
-  this->transTime = transTime;
 
 }
 
 //Set the location of the Node
-void RouteNode::setLoc( int x, int y ) {
+void Node::setLoc( int x, int y ) {
 
   this->x = x;
   this->y = y;
 
 }
 
-//Set the type of the node
-void RouteNode::setType( RNType t ) {
-
-  this->type = t;
-
-}
-
 //Getters and setters
-int RouteNode::getTransTime() { return this->transTime; }
+int Node::getTransTime() { return this->transTime; }
 
-void RouteNode::setTransTime( int newTransTime ) {
+void Node::setTransTime( int newTransTime ) {
 
   this->transTime = newTransTime;
 
 }
 
-int RouteNode::getPropTime() { return this->propTime; }
+int Node::getPropTimeTo( Node * otherNode ) {
 
-void RouteNode::setPropTime( int newPropTime ) {
+  cerr << "[DEBUG] calculating prop time between ";
+  cerr << x << " " << y << " " << otherNode->x << " " << otherNode->y << endl;
 
-  this->propTime = newPropTime;
+  cerr << "dbg";
 
-}
-
-//Meaty functions that do the event processing
-void RouteNode::procSend( PacketEvent * event, EventList * elist ) {
-
-  //Behave differently according to node type
-  switch( this->type ) {
-
-  case RECEIVER: //This will never happen
-    return;
-
-  default: //If the node is not a receiver, then create a new send event,
-           //  and then also transmute this event to a receive event
-    event->setType( PACKET_RECEIVE );
-    event->addTime( this->propTime + this->transTime );
-    event->setTime( event->getTime() + this->propTime + this->transTime );
-    elist->insert( (Event *)event );
-    if( this->packetCount < 100 )
-      elist->insert( (Event *) new PacketEvent( PACKET_SEND,
-						event->getTime() + this->transTime,
-						event->getRoute() ) );
-    break;
-
-  }
+  return (int)ceil( log2( dist( x, y, otherNode->x, otherNode->y ) ) );
 
 }
-
-//process recieve events
-void procRcv( event

@@ -8,53 +8,105 @@
 
 #include "global.h"
 
+using namespace std;
+
 //Some STL features that we use frequently.
 using std::cerr;
 using std::endl;
 using std::cout;
 
-void populateEventList( EventList * elist ) {
+//This debugging function prints the EventList. It is large.
+void prnEList(ELNode * elnode) {
 
-  Route * r1 = new Route( 0 );
-  Route * r2 = new Route( 1 );
+  if( elnode == NULL ) return;
 
-  r1->add( new Route( 2 ) );
-  r2->add( new Route( 2 ) );
-  r1->add( new Route( 3 ) );
-  r2->add( new Route( 3 ) );
-  r1->add( new Route( 4 ) );
-  r2->add( new Route( 4 ) );
+  cerr << "ADDRESS TIME TYPE" << endl;
+  cerr << elnode->get() << " " << elnode->get()->getTime();
+  cerr << " " << ((PacketEvent *)elnode->get())->getType() << endl;
+  
+  prnEList( elnode->getNextPtr() );
 
-  PacketEvent * pe1 = new PacketEvent( PACKET_SEND, 0, r1 );
-  PacketEvent * pe2 = new PacketEvent( PACKET_SEND, 3, r2 );
+}
 
-  elist->insert( (Event *)pe1 );
-  elist->insert( (Event *)pe2 );
+//This function was appropriately named.
+void printUsageAndDie() {
+
+  cerr << "[ERROR] Usage:" << endl;
+  cerr << "\tmanetsim [SOURCES] [RECEIVERS] [MULES] [DIM]" << endl;
+  cerr << "\t[SOURCES] indicates the number of SENDER nodes\n";
+  cerr << "\t[RECEIVERS] indicates the number of RECEIVER nodes\n";
+  cerr << "\t[MULES] indicates the number of MULE nodes\n";
+  cerr << "\t[DIM] indicates the length and width of the square field\n";
+
+  std::exit( 1 );
 
 }
 
 //EP
 int main( int argc, char* argv[] ) {
 
-  if( argc != 1 ) { //If the program usage is incorrect, print an error.
+  if( argc != 5 ) //Invalid CLI
+    printUsageAndDie();
 
-    cerr << "[ERROR] Program usage incorrect. Continuing." << endl;
-    //Program can continue as normal, as no info is needed from cli
+  cerr << "[DEBUG] main: srand()\n";
 
-  }
+  srand( time( NULL ) );
 
-  
+  //Pull info from CLI args array
+  int senders   = atoi( argv[1] );
+  int receivers = atoi( argv[2] );
+  int mules     = atoi( argv[3] );
+  int dim       = atoi( argv[4] );
 
+  //Our main event structures
   EventList * elist = new EventList();
+  EventList * completedEvents = new EventList();
 
-  populateEventList( elist );
+  cerr << "[DEBUG] main: Creating MANET field.\n";
+
+  //Our MANET field. The input from cin is taken within this constructor
+  Field * manetField = new Field( senders, mules, receivers, dim, elist );
+  
+  manetField->draw();
+
+  //Put the initial move event on the list.
+  elist->insert( (Event *)( new PacketEvent( MOVE, 10, 0, 0 ) ) );
 
   //The main driver
   while ( elist->first() != NULL ) {
 
-    //Take the next event off the eventList and dispatch it.
-    eventDispatch( elist, (PacketEvent *) elist->next(), routeNodes );
+    prnEList( elist->getRootNode() );
 
+    PacketEvent * pEv = (PacketEvent *)elist->next();
+    cerr << "[DEBUG] main: have pEv " << pEv << endl;
+
+    switch( pEv->getType() ) { //This switch dispatches to the correct function
+                               //  in the node members.
+    case PACKET_SEND:
+      pEv->currentStop()->procSend( pEv, elist );
+      break;
+
+    case PACKET_CALLBACK:
+      pEv->currentStop()->procCallback( pEv, elist );
+      break;
+      
+    case PACKET_RECEIVE:
+      pEv->currentStop()->procReceive( pEv, elist, completedEvents );
+
+    case MOVE: //Takes care of moving the mules.
+      manetField->moveMules();
+      //manetField->draw();
+      //If the eventlist isn't now empty, then we need to push on another MOVE
+      if(elist->first() != NULL) {
+
+	pEv->addTime(10);
+	elist->insert(pEv);
+
+      }
+      break;
+
+    }
+    
   }
 
   cout << "[SIM] Finished!\n";

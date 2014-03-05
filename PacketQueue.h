@@ -10,6 +10,7 @@
 #define PACKETQUEUE_H
 
 #include "PacketEvent.h"
+#include <cstdlib>
 
 class PQNode {
 

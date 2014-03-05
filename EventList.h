@@ -36,6 +36,7 @@ class EventList {
   EventList( Event * initEvent );
   Event * first();
   Event * next();
+  ELNode * getRootNode();
   void insert( Event * newEvent );
 
 };

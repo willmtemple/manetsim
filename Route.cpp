@@ -8,12 +8,10 @@
 
 #include "Route.h"
 
-#define NULL 0
-
 //Easy init constructor
-Route::Route( int id ) {
+Route::Route( Node * iNode ) {
 
-  this->id = id;
+  this->node = iNode;
   this->nextHop = NULL;
 
 }
@@ -33,9 +31,9 @@ Route * Route::getNext() {
 }
 
 //Recursive "find at index"
-Route * Route::getAt( int index ) {
+Node * Route::getAt( int index ) {
 
-  if( index <= 0 ) return this;
+  if( index <= 0 ) return this->node;
   if( this->nextHop == NULL ) return NULL;
 
   return this->nextHop->getAt( index - 1 );
@@ -45,21 +43,24 @@ Route * Route::getAt( int index ) {
 //Put another node on the route.
 void Route::add( Route * next ) {
 
-  if( this->nextHop == NULL ) {
+  if( this->node == NULL ) {
 
-    this->nextHop = next;
-
-  } else {
-
-    this->nextHop->add( next );
+    this->node = next->get();
+    delete next;
+    return;
 
   }
+
+  if( this->nextHop == NULL )
+    this->nextHop = next;
+  else
+    this->nextHop->add( next );
 
 }
 
 //Get the id
-int getID() {
+Node * Route::get() {
 
-  return this->id;
+  return this->node;
 
 }

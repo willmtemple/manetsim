@@ -10,18 +10,23 @@
 #ifndef ROUTE_H
 #define ROUTE_H
 
+#include <cstdlib>
+
+class Node;
+
 class Route {
 
  protected:
-  int id;
+  Node* node;
   Route * nextHop;
 
  public:
-  Route( int id );
+  Route() { node = NULL; nextHop = NULL; }
+  Route( Node * iNode );
   void setNext( Route * nextHop );
-  int getID();
+  Node * get();
   Route * getNext();
-  Route * getAt( int index );
+  Node * getAt( int index );
   void add( Route * next );
 
 };

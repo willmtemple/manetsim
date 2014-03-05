@@ -12,22 +12,29 @@
 #include "Event.h"
 #include "Route.h"
 
-typedef enum {PACKET_SEND, PACKET_SENT, PACKET_RECEIVE} PType;
+typedef enum {PACKET_SEND, PACKET_CALLBACK, PACKET_RECEIVE, MOVE} PType;
+
+class Node;
 
 class PacketEvent: public Event {
 
- protected:
+ private:
   PType type;
   int routeIndex;
   Route * routeInfo;
   int totalTime;
+  int pSize;
 
  public:
-  PacketEvent( PType iType, int evTime, Route * iRouteInfo );
+  PacketEvent( PType iType, int evTime, Route * iRouteInfo, int pSize );
   PType getType();
+  int getIndex();
+  int size();
   void setType( PType newType );
-  int nextHop();
+  Node * currentStop();
+  Node * nextHop();
   void addTime( int time );
+  Route * getRoute();
 
 };
 

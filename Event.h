@@ -17,6 +17,7 @@ class Event {
  public:
   int getTime() { return eventTime; }
   void setTime( int newTime ) { this->eventTime = newTime; }
+  void increaseTime( int time ) { this->eventTime += time; }
 
 };
 

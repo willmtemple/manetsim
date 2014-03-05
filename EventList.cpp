@@ -125,3 +125,10 @@ void EventList::insert( Event * newEvent ) {
   this->rootNode = this->rootNode->insert( newEvent );
 
 }
+
+//Getter for rootNode
+ELNode * EventList::getRootNode() {
+
+  return rootNode;
+
+}
