@@ -24,6 +24,7 @@ Node::Node( int x, int y, int id ) {
 
   this->x = x;
   this->y = y;
+  this->id = id;
 
 }
 
@@ -35,21 +36,11 @@ void Node::setLoc( int x, int y ) {
 
 }
 
-//Getters and setters
-int Node::getTransTime() { return this->transTime; }
-
-void Node::setTransTime( int newTransTime ) {
-
-  this->transTime = newTransTime;
-
-}
-
+//Calculate the propagation time to another node
 int Node::getPropTimeTo( Node * otherNode ) {
 
   cerr << "[DEBUG] calculating prop time between ";
   cerr << x << " " << y << " " << otherNode->x << " " << otherNode->y << endl;
-
-  cerr << "dbg";
 
   return (int)ceil( log2( dist( x, y, otherNode->x, otherNode->y ) ) );
 

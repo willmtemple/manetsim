@@ -75,7 +75,7 @@ int main( int argc, char* argv[] ) {
   //The main driver
   while ( elist->first() != NULL ) {
 
-    prnEList( elist->getRootNode() );
+    //prnEList( elist->getRootNode() );
 
     PacketEvent * pEv = (PacketEvent *)elist->next();
     cerr << "[DEBUG] main: have pEv " << pEv << endl;
@@ -95,7 +95,7 @@ int main( int argc, char* argv[] ) {
 
     case MOVE: //Takes care of moving the mules.
       manetField->moveMules();
-      //manetField->draw();
+      manetField->draw();
       //If the eventlist isn't now empty, then we need to push on another MOVE
       if(elist->first() != NULL) {
 

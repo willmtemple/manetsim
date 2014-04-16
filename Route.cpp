@@ -8,6 +8,8 @@
 
 #include "Route.h"
 
+#include <cassert>
+
 //Easy init constructor
 Route::Route( Node * iNode ) {
 
@@ -42,6 +44,8 @@ Node * Route::getAt( int index ) {
 
 //Put another node on the route.
 void Route::add( Route * next ) {
+
+  assert( next != this );
 
   if( this->node == NULL ) {
 

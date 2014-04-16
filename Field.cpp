@@ -59,7 +59,7 @@ Field::Field( int senders, int mules, int receivers,
 
   //Third, create new Receivers.
   //  Note, i will be the first index in the RECEIVER range when this is run
-  for( ((void)0); i < senders+mules+receivers; i++ ) {
+  for( i = senders+mules; i < senders+mules+receivers; i++ ) {
 
     int y = 0;
 
@@ -147,11 +147,20 @@ Field::Field( int senders, int mules, int receivers,
 	sNode->setRoute( newRoute );
 
 	//At long last, add the sender to its rightful place.
+	//  But be safe and die if that spot's taken.
+	if( nodes[sId - 1] != NULL ) {
+
+	  cerr << "[ERROR] Attempted to overwrite node.\n";
+	  std::exit(1);
+
+	}
+	
 	nodes[sId-1] = sNode;
 	this->senders[y] = sNode;
 
 	//And push its first event onto the eventlist.
-	elist->insert( new PacketEvent( PACKET_SEND, sATime, newRoute, sPackSize ) );
+	elist->insert( new PacketEvent( PACKET_SEND, sATime, newRoute,
+					sPackSize ) );
 	
 	break;
 

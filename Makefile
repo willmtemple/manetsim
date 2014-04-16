@@ -37,7 +37,7 @@ clean:
 	rm -f *.tar *.o *.out manetsim
 
 test: manetsim Makefile prog5.txt
-	./manetsim 20 10 24 30 < prog5.txt &> test.out
+	./manetsim 20 12 16 36 < prog5.txt &> test.out
 
-tar: test README.md
+tar: README.md
 	tar -cvf manet.tar *.cpp *.h *.out *.txt Makefile README.md
