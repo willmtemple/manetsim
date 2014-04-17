@@ -68,10 +68,12 @@ void PacketQueue::push( PacketEvent * newEvent ) {
     this->headPtr = new PQNode( newEvent );
     this->tailPtr = this->headPtr;
 
-  }
+  } else {
 
-  this->tailPtr->setNextPtr( new PQNode( newEvent ) );
-  this->tailPtr = this->tailPtr->getNextPtr();
+    this->tailPtr->setNextPtr( new PQNode( newEvent ) );
+    this->tailPtr = this->tailPtr->getNextPtr();
+
+  }
 
 }
 

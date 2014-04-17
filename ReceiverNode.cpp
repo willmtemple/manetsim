@@ -13,6 +13,11 @@
 void ReceiverNode::procReceive( PacketEvent * event, EventList * elist,
 			 EventList * completedEvents ) {
 
+  std::cerr << "[DEBUG] ReceiverNode::procReceive at " << this;
+  std::cerr << ": time is " << event->getTime() << std::endl;
+
+  std::cout << "[SIM] Event " << event << " has reached its destination!\n";
+
   //Event has reached its destination (hopefully).
   //  Store it for statistical analysis.
   completedEvents->insert( event );

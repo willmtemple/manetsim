@@ -76,7 +76,6 @@ Field::Field( int senders, int mules, int receivers,
 
   //Finally, the senders, which are obnoxiously complicated
 
-  //Came up with this bit of stringstream coolness
   string scriptLine;
 
   int sId = 0;
@@ -92,6 +91,7 @@ Field::Field( int senders, int mules, int receivers,
     int pIndex = 0; //This signifies where we are on the current line.
     int pVal = 0;   //This value is that which we are considering
 
+    //Came up with this bit of stringstream coolness
     std::stringstream scriptStream ( scriptLine );
 
     //Pick a y-location for this node
@@ -109,60 +109,60 @@ Field::Field( int senders, int mules, int receivers,
       switch( pIndex++ ) {
 
       case 0: // This int determines the id of the node
-	sId = pVal;
-	break;
+	      sId = pVal;
+	      break;
 
       case 1: // This int determines the arrival time of the node
-	sATime = pVal;
-	break;
+	      sATime = pVal;
+	      break;
 	
       case 2: // This int determines the number of packets sent
-	sPackets = pVal;
-	break;
+	      sPackets = pVal;
+	      break;
 
       case 3: //This int determines the packet size
-	sPackSize = pVal;
-	break;
+	      sPackSize = pVal;
+	      break;
 
       case 4: //This int gives us number of  route nodes
 	
-	//Create the new sender node.
-	SenderNode * sNode = new SenderNode( -1, y, sId, sPackets, NULL, sPackSize );
+	      //Create the new sender node.
+	      SenderNode * sNode = new SenderNode( -1, y, sId, sPackets, NULL, sPackSize );
 	
-	cerr << "[DEBUG] Field: created new Sender Node! " << sNode << endl;
+	      cerr << "[DEBUG] Field: created new Sender Node! " << sNode << endl;
 
-	Route * newRoute = new Route( sNode );
+	      Route * newRoute = new Route( sNode );
 
-	cerr << "[DEBUG] SNODE ID IS " << sNode << endl;
+	      cerr << "[DEBUG] SNODE ID IS " << sNode << endl;
 
-	int routeNodeID = 0;
-	//We don't really care how many nodes are in the route. We'll add them
-	//  all.
-	while( scriptStream >> routeNodeID ) {
-	  cerr << "[DEBUG] Adding " << routeNodeID << endl;
-	  if( routeNodeID !=  sId ) //Took care of this with constructor.
-	    newRoute->add( new Route( nodes[routeNodeID - 1] ) );
-	}
+	      int routeNodeID = 0;
+	      //We don't really care how many nodes are in the route. We'll add them
+	      //  all.
+	      while( scriptStream >> routeNodeID ) {
+	        cerr << "[DEBUG] Adding " << routeNodeID << endl;
+	        if( routeNodeID !=  sId ) //Took care of this with constructor.
+	          newRoute->add( new Route( nodes[routeNodeID - 1] ) );
+	      }
 
-	sNode->setRoute( newRoute );
+	      sNode->setRoute( newRoute );
 
-	//At long last, add the sender to its rightful place.
-	//  But be safe and die if that spot's taken.
-	if( nodes[sId - 1] != NULL ) {
+	      //At long last, add the sender to its rightful place.
+	      //  But be safe and die if that spot's taken.
+	      if( nodes[sId - 1] != NULL ) {
 
-	  cerr << "[ERROR] Attempted to overwrite node.\n";
-	  std::exit(1);
+	        cerr << "[ERROR] Attempted to overwrite node.\n";
+	        std::exit(1);
 
-	}
+	      }
 	
-	nodes[sId-1] = sNode;
-	this->senders[y] = sNode;
+	      nodes[sId - 1] = sNode;
+	      this->senders[y] = sNode;
 
-	//And push its first event onto the eventlist.
-	elist->insert( new PacketEvent( PACKET_SEND, sATime, newRoute,
-					sPackSize ) );
+	      //And push its first event onto the eventlist.
+	      elist->insert( new PacketEvent( PACKET_SEND, sATime, newRoute,
+				                                sPackSize ) );
 	
-	break;
+	      break;
 
       }
 

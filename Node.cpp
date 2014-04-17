@@ -39,8 +39,8 @@ void Node::setLoc( int x, int y ) {
 //Calculate the propagation time to another node
 int Node::getPropTimeTo( Node * otherNode ) {
 
-  cerr << "[DEBUG] calculating prop time between ";
-  cerr << x << " " << y << " " << otherNode->x << " " << otherNode->y << endl;
+  //cerr << "[DEBUG] calculating prop time between ";
+  //cerr << x << " " << y << " " << otherNode->x << " " << otherNode->y << endl;
 
   return (int)ceil( log2( dist( x, y, otherNode->x, otherNode->y ) ) );
 

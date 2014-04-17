@@ -31,8 +31,8 @@ void prnEList(ELNode * elnode) {
 //This function was appropriately named.
 void printUsageAndDie() {
 
-  cerr << "[ERROR] Usage:" << endl;
-  cerr << "\tmanetsim [SOURCES] [RECEIVERS] [MULES] [DIM]" << endl;
+  cerr << "[ERROR] Usage: ";
+  cerr << "manetsim [SOURCES] [RECEIVERS] [MULES] [DIM]" << endl;
   cerr << "\t[SOURCES] indicates the number of SENDER nodes\n";
   cerr << "\t[RECEIVERS] indicates the number of RECEIVER nodes\n";
   cerr << "\t[MULES] indicates the number of MULE nodes\n";
@@ -92,17 +92,21 @@ int main( int argc, char* argv[] ) {
       
     case PACKET_RECEIVE:
       pEv->currentStop()->procReceive( pEv, elist, completedEvents );
+      break;
 
     case MOVE: //Takes care of moving the mules.
+      cerr << "[DEBUG] Moving all mules. Time is " << pEv->getTime() << endl;
       manetField->moveMules();
+      cout << "[SIM] The current board state looks like:\n";
       manetField->draw();
       //If the eventlist isn't now empty, then we need to push on another MOVE
       if(elist->first() != NULL) {
 
-	pEv->addTime(10);
-	elist->insert(pEv);
+	      pEv->addTime(10);
+	      elist->insert(pEv);
 
       }
+
       break;
 
     }

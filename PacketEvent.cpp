@@ -54,7 +54,9 @@ int PacketEvent::getIndex() {
 //Get node index of nextHop, then increment index
 Node * PacketEvent::nextHop() {
 
-  return this->routeInfo->getAt( ++(this->routeIndex) );
+  routeIndex++;
+
+  return this->routeInfo->getAt( routeIndex );
 
 }
 

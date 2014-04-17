@@ -16,12 +16,19 @@ using std::endl;
 //Process SEND events on SenderNode
 void SenderNode::procSend( PacketEvent * event, EventList * elist ) {
 
-  cerr << "[DEBUG] procSend on SENDER " << this;
-  cerr << ", time is " << event->getTime() << endl;
+  cerr << "[DEBUG] SenderNode::procSend at " << this;
+  cerr << ": time is " << event->getTime() << endl;
 
-  int timeTo = packSize + getPropTimeTo( event->nextHop() );
+  //int indexHere = event->getIndex();
+  //Node * here = event->currentStop();
+  Node * next = event->nextHop();
+  //int indexNext = event->getIndex();
+  //cerr << "[DEBUG] Event landed at " << here << " with index " << indexHere << endl;
+  //cerr << "[DEBUG] Event headed to " << next << " with index " << indexNext << endl;
 
-  cerr << "[DEBUG] this SEND will take " << timeTo << endl;
+  int timeTo = packSize + getPropTimeTo( next );
+
+  //cerr << "[DEBUG] this SEND will take " << timeTo << endl;
 
   //Declare and insert a callback that will control when the next SEND
   //  is dispatched from this node.
@@ -33,7 +40,7 @@ void SenderNode::procSend( PacketEvent * event, EventList * elist ) {
   event->setType( PACKET_RECEIVE );
   event->addTime( timeTo );
   
-  cout << "[SIM] " << this << " is SENDING a packet!\n";
+  cout << "[SIM] SenderNode at " << this << " is SENDING a packet!\n";
 
   //We now need to send one less packet.
   packets--;
@@ -56,12 +63,12 @@ void SenderNode::procReceive( PacketEvent * event, EventList * elist,
 //Process CALLBACK on SenderNode
 void SenderNode::procCallback( PacketEvent * event, EventList * elist ) {
 
-  cerr << "[DEBUG] procCallback on SENDER " << this;
-  cerr << ", time is " << event->getTime() << endl;
+  cerr << "[DEBUG] SenderNode::procCallback on " << this;
+  cerr << ": time is " << event->getTime() << endl;
 
   if( packets > 0 ) { //We still have packets to send.
 
-    cerr << "[DEBUG] procCallback: Callback IS dispatching new event.\n";
+    //cerr << "[DEBUG] procCallback: Callback IS dispatching new event.\n";
 
     //Dispatch a new SEND into a RECEIVE event immediately.
     this->procSend( new PacketEvent( PACKET_SEND, event->getTime(),
